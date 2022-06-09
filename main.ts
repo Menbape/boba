@@ -1,27 +1,39 @@
-controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
-    projectile2 = sprites.createProjectileFromSide(img`
-        ................................
-        ..............aaa...............
-        .............aaaaa..............
-        ............a.aaa.a.............
-        ...........a..aaa..a............
-        ..............aaa...............
-        ..............aaa...............
-        ................................
-        ................................
-        ................................
-        ................................
-        ................................
-        ................................
-        ................................
-        ................................
-        ................................
-        `, 0, 50)
+controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
+    mateorit = sprites.createProjectileFromSprite(img`
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . 2 2 . . . . . . . 
+        . . . . . . 2 2 2 2 . . . . . . 
+        . . . . . 2 2 2 2 2 2 . . . . . 
+        . . . . 2 2 . 2 2 . 2 2 . . . . 
+        . . . . . . . 2 2 . . . . . . . 
+        . . . . . . . 2 2 . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        `, Nave, 0, -50)
+    music.pewPew.play()
 })
-let projectile2: Sprite = null
+sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Enemy, function (sprite, otherSprite) {
+    mateorit.destroy()
+    otherSprite.destroy(effects.confetti, 500)
+    info.changeLifeBy(1)
+})
+sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
+    info.changeLifeBy(-1)
+    otherSprite.destroy(effects.fire, 500)
+    scene.cameraShake(4, 500)
+})
+let mateorit: Sprite = null
+let Nave: Sprite = null
 game.splash("Benvingut", "Apreta A per començar i B per disparar")
 effects.starField.startScreenEffect()
-let Nave = sprites.create(img`
+Nave = sprites.create(img`
     . . . . . . . . . . . . . . . . 
     . . . . . . . . . . . . . . . . 
     . . . . . . . . . . . . . . . . 
@@ -44,7 +56,7 @@ controller.moveSprite(Nave, 100, 100)
 Nave.setStayInScreen(true)
 info.setLife(3)
 game.onUpdateInterval(1000, function () {
-    projectile2 = sprites.createProjectileFromSide(img`
+    mateorit = sprites.createProjectileFromSide(img`
         ................................
         ................................
         ..........bbbbbbbbbbbb..........
@@ -62,6 +74,6 @@ game.onUpdateInterval(1000, function () {
         .....cccccccccccccccccccccc.....
         ..........bbbdddd11dbb..........
         `, 0, 50)
-    Nave.x += randint(0, scene.screenWidth())
-    Nave.setKind(SpriteKind.Player)
+    mateorit.x += randint(0, scene.screenWidth())
+    mateorit.setKind(SpriteKind.Enemy)
 })
